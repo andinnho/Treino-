@@ -4,7 +4,6 @@ import { WorkoutCard } from './components/WorkoutCard';
 import { ProgressChart } from './components/ProgressChart';
 import { INITIAL_WORKOUTS } from './constants';
 import { ProgressState, HistoryEntry } from './types';
-import { analyzeWorkoutProgress } from './services/geminiService';
 
 const App: React.FC = () => {
   // Map JS getDay() to our IDs
@@ -21,8 +20,6 @@ const App: React.FC = () => {
   });
 
   const [activeChart, setActiveChart] = useState<{ id: string, name: string } | null>(null);
-  const [aiAnalysis, setAiAnalysis] = useState<string>('');
-  const [loadingAi, setLoadingAi] = useState(false);
 
   useEffect(() => {
     localStorage.setItem('workout_progress_v2', JSON.stringify(progress));
@@ -48,13 +45,6 @@ const App: React.FC = () => {
     });
   }, []);
 
-  const runAiAnalysis = async () => {
-    setLoadingAi(true);
-    const result = await analyzeWorkoutProgress(INITIAL_WORKOUTS, progress);
-    setAiAnalysis(result);
-    setLoadingAi(false);
-  };
-
   const activeWorkout = useMemo(() => 
     INITIAL_WORKOUTS.find(w => w.id === activeDayId) || INITIAL_WORKOUTS[0]
   , [activeDayId]);
@@ -69,19 +59,6 @@ const App: React.FC = () => {
           </h1>
           <p className="text-slate-500 text-sm font-medium">Evolução constante de carga</p>
         </div>
-        
-        <button 
-          onClick={runAiAnalysis}
-          disabled={loadingAi}
-          className="group relative px-5 py-2.5 bg-indigo-600 hover:bg-indigo-500 disabled:opacity-50 text-white text-sm font-bold rounded-xl transition-all shadow-lg shadow-indigo-500/20 flex items-center gap-2 overflow-hidden"
-        >
-          {loadingAi ? (
-            <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
-          ) : (
-            <span>✨</span>
-          )}
-          Analisar IA
-        </button>
       </header>
 
       <main className="max-w-4xl mx-auto">
@@ -101,16 +78,6 @@ const App: React.FC = () => {
             </button>
           ))}
         </nav>
-
-        {/* AI Insight Box */}
-        {aiAnalysis && (
-          <div className="mb-8 p-5 bg-indigo-900/20 border border-indigo-500/20 rounded-2xl animate-in fade-in slide-in-from-top-2 duration-500">
-            <h3 className="text-indigo-300 font-bold mb-1 flex items-center gap-2 text-sm">
-              <span>🤖</span> Feedback IA
-            </h3>
-            <p className="text-xs leading-relaxed text-indigo-100/80 italic">"{aiAnalysis}"</p>
-          </div>
-        )}
 
         {/* Selected Workout Card */}
         <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
@@ -135,7 +102,7 @@ const App: React.FC = () => {
               exerciseName={activeChart.name}
             />
             <button 
-              className="mt-4 w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-bold border border-slate-700 transition-colors shadow-xl"
+              className="mt-4 w-full py-4 bg-slate-800 hover:bg-slate-700 text-white rounded-2xl font-bold border border-gray-700 transition-colors shadow-xl"
               onClick={() => setActiveChart(null)}
             >
               Fechar Detalhes

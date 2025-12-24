@@ -1,7 +1,5 @@
 {
   "name": "Treino Semanal Pro",
-  "description": "Uma aplicação avançada para acompanhamento de treinos, evolução de cargas e análise de performance com IA.",
-  "requestFramePermissions": [
-    "camera"
-  ]
+  "description": "Uma aplicação avançada para acompanhamento de treinos e evolução de cargas.",
+  "requestFramePermissions": []
 }
