@@ -8,6 +8,17 @@ export interface Exercise {
   previousWeight?: number;
 }
 
+export interface ExerciseTemplate {
+  nome: string;
+  nivel: string;
+  equipamento: string;
+  observacoes: string;
+}
+
+export interface ExerciseDatabase {
+  [category: string]: ExerciseTemplate[] | { [subcategory: string]: ExerciseTemplate[] };
+}
+
 export interface WorkoutDay {
   id: string;
   title: string;

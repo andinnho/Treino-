@@ -2,11 +2,11 @@
 import { GoogleGenAI } from "@google/genai";
 import { ProgressState, WorkoutDay } from "../types";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY || "" });
+// Fix: Always use new GoogleGenAI({apiKey: process.env.API_KEY}) as per guidelines.
+const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
 
 export async function analyzeWorkoutProgress(workouts: WorkoutDay[], history: ProgressState): Promise<string> {
-  if (!process.env.API_KEY) return "Configure a API Key para receber análises da IA.";
-
+  // Fix: Removed manual check for process.env.API_KEY as it's assumed to be pre-configured.
   try {
     const response = await ai.models.generateContent({
       model: "gemini-3-flash-preview",
@@ -15,6 +15,7 @@ export async function analyzeWorkoutProgress(workouts: WorkoutDay[], history: Pr
       Histórico Recente: ${JSON.stringify(history)}
       Dê uma resposta motivadora e técnica em português do Brasil, curta e direta.`,
     });
+    // Fix: Access response.text property directly.
     return response.text || "Não foi possível gerar uma análise no momento.";
   } catch (error) {
     console.error("AI Analysis Error:", error);
